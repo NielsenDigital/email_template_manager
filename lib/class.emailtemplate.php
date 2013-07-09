@@ -268,7 +268,7 @@ Class EmailTemplate extends XSLTPage{
 		}
 
 		if(empty($this->_parsedProperties['subject'])){
-			$this->_parsedProperties['subject'] = $this->evalXPath($this->subject, false);
+			$this->_parsedProperties['subject'] = $this->disableOutputEscaping($this->evalXPath($this->subject, false));
 			//$this->addParams(Array('etm-subject'=>$this->_parsedProperties['subject']));
 		}
 
@@ -287,6 +287,20 @@ Class EmailTemplate extends XSLTPage{
 		return $this->_parsedProperties;
 	}
 
+    public function disableOutputEscaping($string) 
+    {
+        $entities = array('&apos;' => "'");
+        
+        foreach($entities as $escaped => $value)
+        {
+            if(preg_match("`$escaped`", $string))
+            {
+                $string = preg_replace("`$escaped`", $value, $string);
+            }
+        }
+        
+        return $string;
+    }
 	public function getProperties(){
 		return Array(
 			'reply-to-name' => $this->reply_to_name,
