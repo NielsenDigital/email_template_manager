@@ -209,7 +209,7 @@ Class EmailTemplate extends XSLTPage{
 			)
 		);
 		if (!is_null($devkit)) {
-			$devkit->prepare($this, Array('filelocation'=>dirname(EmailTemplateManager::find($this->getHandle())) . '/' . EmailTemplateManager::getFileNameFromLayout($template)), $this->_xml, $this->_param, $output);
+			$devkit->prepare($this, Array('title' => $this->getName(), 'filelocation'=>dirname(EmailTemplateManager::find($this->getHandle())) . '/' . EmailTemplateManager::getFileNameFromLayout($template)), $this->_xml, $this->_param, $output);
 			return $devkit->build();
 		}
 		return $output;
@@ -250,7 +250,7 @@ Class EmailTemplate extends XSLTPage{
 							$rcpts[trim($author->get('first_name') . ' '. $author->get('last_name'))] = $author->get("email");
 						}
 						else{
-							Symphony::$Log->pushToLog(__('Email Template Manager') . ': ' . ' Recipient is recognised as a username, but the user can not be found: ' . $recipient , 100, true);
+							Symphony::Log()->pushToLog(__('Email Template Manager') . ': ' . ' Recipient is recognised as a username, but the user can not be found: ' . $recipient , 100, true);
 						}
 					}
 				}
@@ -268,7 +268,7 @@ Class EmailTemplate extends XSLTPage{
 		}
 
 		if(empty($this->_parsedProperties['subject'])){
-			$this->_parsedProperties['subject'] = $this->disableOutputEscaping($this->evalXPath($this->subject, false));
+            $this->_parsedProperties['subject'] = $this->disableOutputEscaping($this->evalXPath($this->subject, false));
 			//$this->addParams(Array('etm-subject'=>$this->_parsedProperties['subject']));
 		}
 
@@ -287,7 +287,8 @@ Class EmailTemplate extends XSLTPage{
 		return $this->_parsedProperties;
 	}
 
-    public function disableOutputEscaping($string) 
+    
+    public function disableOutputEscaping($string)  
     {
         $entities = array('&apos;' => "'");
         
@@ -301,6 +302,7 @@ Class EmailTemplate extends XSLTPage{
         
         return $string;
     }
+    
 	public function getProperties(){
 		return Array(
 			'reply-to-name' => $this->reply_to_name,
